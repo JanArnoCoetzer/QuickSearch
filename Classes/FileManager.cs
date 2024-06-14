@@ -1,0 +1,587 @@
+﻿using System;
+using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Reflection.Metadata;
+using System.Text;
+using System.Text.RegularExpressions;
+using WindowsQuickSearch.Forms;
+
+namespace WindowsQuickSearch.Classes
+{
+    public class FileManager
+    {
+        public static string defaultDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
+        private static readonly string _FoldersFile = defaultDirectory + @"AppDependancies\TextFiles\Folders";
+        private static readonly string _directoriesFile = defaultDirectory + @"AppDependancies\TextFiles\directories";
+        private static readonly string _executablesFile = defaultDirectory + @"AppDependancies\TextFiles\executables";
+        private static readonly string _imagesFile = defaultDirectory + @"AppDependancies\TextFiles\images";
+        private static readonly string _videosFile = defaultDirectory + @"AppDependancies\TextFiles\videos";
+        private static readonly string _audioFile = defaultDirectory + @"AppDependancies\TextFiles\audios";
+        private static readonly string _systemFile = defaultDirectory + @"AppDependancies\TextFiles\systems";
+        private static readonly string _textFile = defaultDirectory + @"AppDependancies\TextFiles\text";
+        private static readonly string _CompressedFile = defaultDirectory + @"AppDependancies\TextFiles\Compressed";
+        private static readonly string _miscellaneousFile = defaultDirectory + @"AppDependancies\TextFiles\miscellaneous";
+        
+
+        private static readonly string[] _executablesTypes = { ".exe", ".msi", ".bat", ".cmd", ".com", ".cpl", ".scr" };
+        private static readonly string[] _imagesTypes = { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".ico" };
+        private static readonly string[] _videosTypes = { ".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm" };
+        private static readonly string[] _audioTypes = { ".mp3", ".wav", ".aac", ".flac", ".ogg", ".wma", ".m4a" };
+        private static readonly string[] _systemTypes = { ".sys", ".dll", ".drv", ".ocx", ".inf", ".wer" };
+        private static readonly string[] _textTypes = { ".txt", ".csv", ".xml", ".json", ".log", ".config", ".ini", ".html", ".css", ".md", ".ini" };
+        private static readonly string[] _compressedTypes = { ".zip", ".rar", ".7z", ".tar", ".gz", ".bz2", ".xz" };
+
+        private static int _foldersfilesSearched = 0;
+
+        private static string GetFieldInFile(string path, string field)
+        {
+            if (!File.Exists(path))
+            {
+                Debug.WriteLine("FilePathError: " + path + "not found");
+                return "";
+            }
+
+            string[] lines = File.ReadAllLines(path);
+
+            string pattern = @"\{(.*?)\}";
+
+            foreach (string line in lines)
+            {
+                Match match = Regex.Match(line, pattern);
+
+                if (match.Success)
+                {
+                    string content = match.Groups[1].Value;
+
+                    if (line.Contains(field))
+                    {
+                        return content;
+                    }
+                }
+            }
+            Debug.WriteLine("---Content Error: Field '" + field + "' not found in " + path);
+            return "";
+        }
+
+        public static void IndexFiles()
+        {
+            List<string> drives = GetFixedDriveNames();
+            
+
+            if (Directory.Exists(defaultDirectory))
+            {
+                if (Directory.Exists(defaultDirectory + @"\AppDependancies"))
+                {
+                    if (Directory.Exists(defaultDirectory + @"\AppDependancies\TextFiles"))
+                    {
+                        Debug.WriteLine("-_-_-_Indexing_-_-_-");
+                        Debug.WriteLine("starting search");
+
+                        
+                        string directoriesContent = "";
+
+                        foreach (string drive in drives) 
+                        {
+                            Debug.WriteLine("Searching drive: " + drive);
+                            directoriesContent += "\n"+ SearchFiles(drive);
+                        }
+                        
+                        Debug.WriteLine("proccessing");
+
+                        CreateOrUpdateTextFile(_directoriesFile, directoriesContent);
+                        
+                        string executablesPaths = FilterAndJoinPaths(directoriesContent, _executablesTypes);
+                        string imagesPaths = FilterAndJoinPaths(directoriesContent, _imagesTypes);
+                        string videosPaths = FilterAndJoinPaths(directoriesContent, _videosTypes);
+                        string audioPaths = FilterAndJoinPaths(directoriesContent, _audioTypes);
+                        string systemPaths = FilterAndJoinPaths(directoriesContent, _systemTypes);
+                        string textPaths = FilterAndJoinPaths(directoriesContent, _textTypes);
+                        string compressedPaths = FilterAndJoinPaths(directoriesContent, _compressedTypes);
+                        string folderPaths = FilterFoldersFromPaths(directoriesContent);
+                        string miscellaneousPaths = GetMiscellaneousPaths(directoriesContent,
+                                                                  _executablesTypes.Concat(_imagesTypes)
+                                                                                   .Concat(_videosTypes)
+                                                                                   .Concat(_audioTypes)
+                                                                                   .Concat(_systemTypes)
+                                                                                   .Concat(_textTypes)
+                                                                                   .Concat(_compressedTypes)
+                                                                                   .ToArray());
+
+
+
+                        Debug.WriteLine("StartSaving...");
+
+                        CreateOrUpdateTextFile(_executablesFile, executablesPaths);
+                        CreateOrUpdateTextFile(_imagesFile, imagesPaths);
+                        CreateOrUpdateTextFile(_videosFile, videosPaths);
+                        CreateOrUpdateTextFile(_audioFile, audioPaths);
+                        CreateOrUpdateTextFile(_systemFile, systemPaths);
+                        CreateOrUpdateTextFile(_textFile, textPaths);
+                        CreateOrUpdateTextFile(_CompressedFile, compressedPaths);
+                        CreateOrUpdateTextFile(_miscellaneousFile, miscellaneousPaths);
+                        CreateOrUpdateTextFile(_FoldersFile, folderPaths);
+                    }
+                    else
+                    {
+                        Directory.CreateDirectory(defaultDirectory + @"\AppDependancies\TextFiles");
+                        IndexFiles();
+                    }
+                }
+                else
+                {
+                    Directory.CreateDirectory(defaultDirectory + @"\AppDependancies");
+                    Directory.CreateDirectory(defaultDirectory + @"\AppDependancies\TextFiles");
+                    IndexFiles();
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(defaultDirectory);
+                Directory.CreateDirectory(defaultDirectory + @"\AppDependancies");
+                Directory.CreateDirectory(defaultDirectory + @"\AppDependancies\TextFiles");
+                IndexFiles();
+            }
+
+        }
+
+        static List<string> GetFixedDriveNames()
+        {
+            // Get all drives
+            DriveInfo[] allDrives = DriveInfo.GetDrives();
+
+            // Initialize a list to hold the drive names
+            List<string> driveNames = new List<string>();
+
+            foreach (DriveInfo drive in allDrives)
+            {
+                if (drive.DriveType == DriveType.Fixed)
+                {
+                    driveNames.Add(drive.Name);
+                }
+            }
+
+            return driveNames;
+        }
+
+        public static string GetMiscellaneousPaths(string directoriesContent, string[] allowedExtensions)
+        {
+            List<string> miscellaneousPaths = new List<string>();
+
+            // Split the directories content into individual file paths
+            string[] filePaths = directoriesContent.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+
+            // Iterate through each file path
+            foreach (string filePath in filePaths)
+            {
+                // Check if the file has any of the allowed extensions
+                bool hasAllowedExtension = false;
+                foreach (string extension in allowedExtensions)
+                {
+                    if (filePath.EndsWith(extension, StringComparison.OrdinalIgnoreCase))
+                    {
+                        hasAllowedExtension = true;
+                        break;
+                    }
+                }
+
+                // If the file doesn't have any of the allowed extensions, add it to miscellaneous paths
+                if (!hasAllowedExtension)
+                {
+                    miscellaneousPaths.Add(filePath);
+                }
+            }
+
+            // Join the miscellaneous paths into a single string with newline separator
+            return string.Join(Environment.NewLine, miscellaneousPaths);
+        }
+
+        public static string SearchIndexed(string keyword, QuickSearchMaster master)
+        {
+            _foldersfilesSearched = 0;
+
+            if (Regex.IsMatch(keyword, @"^[a-zA-Z0-9_\-]+\.[a-zA-Z0-9_\-]+$"))
+            {
+                try
+                {
+                    string[] extensionparts = keyword.Split('.');
+                    string extension = "." + (extensionparts[^1].ToLower());
+                    Debug.WriteLine(extensionparts.Length);
+
+                    if (_executablesTypes.Contains(extension))
+                    {
+                        string content = File.ReadAllText(_executablesFile);
+                        return FindLinesWithWord(content, keyword, master);
+                    }
+                    else if (_imagesTypes.Contains(extension))
+                    {
+                        string content = File.ReadAllText(_imagesFile);
+                        return FindLinesWithWord(content, keyword, master);
+                    }
+                    else if (_videosTypes.Contains(extension))
+                    {
+                        string content = File.ReadAllText(_videosFile);
+                        return FindLinesWithWord(content, keyword, master);
+                    }
+                    else if (_audioTypes.Contains(extension))
+                    {
+                        string content = File.ReadAllText(_audioFile);
+                        return FindLinesWithWord(content, keyword, master);
+                    }
+                    else if (_systemTypes.Contains(extension))
+                    {
+                        string content = File.ReadAllText(_systemFile);
+                        return FindLinesWithWord(content, keyword, master);
+                    }
+                    else if (_textTypes.Contains(extension))
+                    {
+                        string content = File.ReadAllText(_textFile);
+                        return FindLinesWithWord(content, keyword, master);
+                    }
+                    else if (_compressedTypes.Contains(_CompressedFile))
+                    {
+                        string content = File.ReadAllText(_CompressedFile);
+                        return FindLinesWithWord(content, keyword, master);
+                    }
+                    else
+                    {
+                        string content = File.ReadAllText(_miscellaneousFile);
+
+                        if (content.Trim().Length <= 0)
+                        {
+                            string _directoriesFilecontent = File.ReadAllText(_directoriesFile);
+                            content += "\n" + FindLinesWithWord(_directoriesFilecontent, keyword, master);
+                        }
+                        else
+                        {
+                            return content;
+                        }
+                        return FindLinesWithWord(content, keyword, master);
+                    }
+                }
+                catch (DirectoryNotFoundException ex)
+                {
+                    ShowErrorMessage(ex.ToString());
+                    return "";
+                }
+
+
+            }
+
+            else
+            {
+                try
+                {
+                    string content = File.ReadAllText(_FoldersFile);
+                    string resaults = FindLinesWithWord(content, keyword, master);
+                    resaults = RemoveDuplicateLines(FilterPathsByKeyword(resaults, keyword));
+
+                    if (resaults.Trim().Length <= 0)
+                    {
+                        string _directoriesFilecontent = File.ReadAllText(_directoriesFile);
+                        resaults += "\n" + FindLinesWithWord(_directoriesFilecontent, keyword, master);
+
+                        return resaults;
+                    }
+                    else
+                    {
+                        return resaults;
+                    }
+                }
+
+                catch (DirectoryNotFoundException ex) 
+                {
+                    ShowErrorMessage(ex.ToString());
+                    return "";
+                }
+
+            }
+        }
+
+        private static void ShowErrorMessage(string err)
+        {
+            // Define the error message
+            string message = "Before you are able to search, the drives needs to be indexed.\n\nGo settings>Indexing>Index";
+            string caption = "Drives Not Indexed";
+            MessageBoxButtons buttons = MessageBoxButtons.OK;
+            MessageBoxIcon icon = MessageBoxIcon.Error;
+
+            // Display the message box
+            MessageBox.Show(message, caption, buttons, icon);
+        }
+
+
+        static string SearchFiles(string directory = @"C:\")
+        {
+            StringBuilder filesStringBuilder = new StringBuilder();
+            object lockObj = new object();
+
+                try
+                {
+
+                    Parallel.ForEach(Directory.GetFiles(directory), file =>
+                    {
+                        lock (lockObj)
+                        {
+                            filesStringBuilder.AppendLine(file);
+                        }
+                    });
+
+
+
+                    Parallel.ForEach(Directory.GetDirectories(directory), subDir =>
+                    {
+                        try
+                        {
+                            lock (lockObj)
+                            {                              
+                                    filesStringBuilder.Append(SearchFiles(subDir));
+                            }
+
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            
+                        }
+                        catch (Exception ex)
+                        {
+
+
+                        }
+
+                    });
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    
+                }
+                catch (Exception ex)
+                {
+
+
+                }
+            
+
+            return filesStringBuilder.ToString();
+        }
+
+
+       
+        
+        static void CreateOrUpdateTextFile(string path, string content)
+        {
+            Debug.WriteLine("-_-_-_SAVING_-_-_-\n" + path);
+            try
+            {
+                File.WriteAllText(path, content);
+                Debug.WriteLine("-_-_-_SUCCESS_-_-_-.");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+
+
+        static string FindLinesWithWord(string input, string word, QuickSearchMaster master)
+        {
+            StringBuilder resultBuilder = new StringBuilder();
+            object lockObject = new object();
+            string[] lines = input.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+
+            _foldersfilesSearched += lines.Length;
+
+            master.FoldersSearchedLabel.Text = "Folders/FilesSearched:" + _foldersfilesSearched;
+
+            Parallel.ForEach(lines, line =>
+            {
+                if (line.ToUpper().Contains(word.ToUpper()))
+                {
+                    lock (lockObject)
+                    {
+                        resultBuilder.AppendLine(line);
+                    }
+                }
+            });
+
+            return resultBuilder.ToString();
+        }
+
+
+
+        static string FilterAndJoinPaths(string paths, string[] types)
+        {
+            List<string> filteredPaths = FilterPaths(paths, types);
+
+            return string.Join(Environment.NewLine, filteredPaths);
+        }
+
+        static List<string> FilterPaths(string paths, string[] types)
+        {
+            List<string> filteredPaths = new List<string>();
+
+            string[] pathArray = paths.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+
+            Parallel.ForEach(pathArray, path =>
+            {
+                if (IsFileType(path, types))
+                {
+
+
+                    lock (filteredPaths)
+                    {
+                        filteredPaths.Add(path);
+                    }
+
+
+                }
+            });
+
+            return filteredPaths;
+        }
+
+
+
+        static bool IsFileType(string path, string[] types)
+        {
+            string extension = Path.GetExtension(path);
+            return types.Any(type => extension.Equals(type, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public static string GetFoldersInDirectory(string path, QuickSearchMaster master)
+        {
+            try
+            {
+                string[] files = Directory.GetFiles(path);
+                string[] directories = Directory.GetDirectories(path);
+
+
+                string content = "";
+
+                foreach (string directory in directories)
+                {
+                    content += Path.GetFileName(directory) + "\n";
+                }
+
+                var lines = content.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+                var nonBlankLines = lines.Where(line => !string.IsNullOrWhiteSpace(line));
+                return string.Join("\n", nonBlankLines);
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
+        }
+
+        public static string GetContentInDirectory(string path)
+        {
+            try
+            {
+                string[] files = Directory.GetFiles(path);
+                string[] directories = Directory.GetDirectories(path);
+
+
+                string content = "";
+
+                foreach (string file in files)
+                {
+                    content += Path.GetFileName(file) + "\n";
+                }
+
+                var lines = content.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                var nonBlankLines = lines.Where(line => !string.IsNullOrWhiteSpace(line));
+
+                return string.Join("\n", nonBlankLines);
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
+        }
+
+        private static string FilterFoldersFromPaths(string paths)
+        {
+            List<string> filteredPaths = FilterFolders(paths);
+            return RemoveDuplicateLines(string.Join(Environment.NewLine, filteredPaths));
+        }
+
+        static List<string> FilterFolders(string paths)
+        {
+            List<string> filteredPaths = new List<string>();
+
+            string[] pathArray = paths.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var path in pathArray)
+            {
+                filteredPaths.Add(OneStepUp(path));
+            }
+            return filteredPaths;
+        }
+
+        static string OneStepUp(string path)
+        {
+
+            int lastSeparatorIndex = path.LastIndexOf('\\');
+
+            if (lastSeparatorIndex > 0)
+            {
+                return path.Substring(0, lastSeparatorIndex);
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        static string RemoveDuplicateLines(string input)
+        {
+            // Use a HashSet to store unique lines
+            HashSet<string> uniqueLines = new HashSet<string>();
+            StringBuilder resultBuilder = new StringBuilder();
+
+            // Split the input string into lines
+            string[] lines = input.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+
+            foreach (string line in lines)
+            {
+                if (uniqueLines.Add(line))
+                {
+                    // Append the line to the result if it's added to the HashSet (i.e., it's unique)
+                    resultBuilder.AppendLine(line);
+                }
+            }
+
+            return resultBuilder.ToString().TrimEnd();
+        }
+
+        static string FilterPathsByKeyword(string input, string keyword)
+        {
+            StringBuilder resultBuilder = new StringBuilder();
+            string[] lines = input.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+
+            foreach (string line in lines)
+            {
+                string path = line.Substring(line.IndexOf('\t') + 1);
+                int keywordIndex = path.IndexOf(keyword, StringComparison.OrdinalIgnoreCase);
+
+                if (keywordIndex != -1)
+                {
+                    // Find the end of the word containing the keyword
+                    int endIndex = keywordIndex + keyword.Length;
+                    while (endIndex < path.Length && (char.IsLetterOrDigit(path[endIndex]) || path[endIndex] == '_' || path[endIndex] == '.'))
+                    {
+                        endIndex++;
+                    }
+
+                    string filteredPath = path.Substring(0, endIndex);
+                    resultBuilder.AppendLine(filteredPath);
+                }
+            }
+
+            return resultBuilder.ToString().TrimEnd();
+        }
+
+        
+    }
+}
