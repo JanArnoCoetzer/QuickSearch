@@ -12,6 +12,8 @@ namespace WindowsQuickSearch.Classes
     {
         public static string defaultDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
+        public static readonly string _appSettingsFile = defaultDirectory + @"AppDependancies\AppSettings.txt";
+
         private static readonly string _FoldersFile = defaultDirectory + @"AppDependancies\TextFiles\Folders";
         private static readonly string _directoriesFile = defaultDirectory + @"AppDependancies\TextFiles\directories";
         private static readonly string _executablesFile = defaultDirectory + @"AppDependancies\TextFiles\executables";
@@ -34,11 +36,12 @@ namespace WindowsQuickSearch.Classes
 
         private static int _foldersfilesSearched = 0;
 
-        private static string GetFieldInFile(string path, string field)
+        public static string GetFieldInFile(string path, string field)
         {
+            
             if (!File.Exists(path))
             {
-                Debug.WriteLine("FilePathError: " + path + "not found");
+                Debug.WriteLine("FilePathError: " + path + " not found");
                 return "";
             }
 
@@ -64,85 +67,143 @@ namespace WindowsQuickSearch.Classes
             return "";
         }
 
-        public static void IndexFiles()
+        public static bool SetFieldInFile(string path, string field, string value)
+        {
+            if (!File.Exists(path))
+            {
+                Debug.WriteLine("FilePathError: " + path + " not found");
+                return false;
+            }
+
+            string[] lines = File.ReadAllLines(path);
+            string pattern = $@"({field}\{{)(.*?)(\}})";
+            bool fieldFound = false;
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                Match match = Regex.Match(lines[i], pattern);
+                if (match.Success)
+                {
+                    lines[i] = Regex.Replace(lines[i], pattern, $"${{{1}}}{value}${{{3}}}");
+                    fieldFound = true;
+                    break;
+                }
+            }
+
+            if (fieldFound)
+            {
+                File.WriteAllLines(path, lines);
+                return true;
+            }
+            else
+            {
+                Debug.WriteLine("---Content Error: Field '" + field + "' not found in " + path);
+                return false;
+            }
+        }
+
+
+        public static string[] IndexFiles()
         {
             List<string> drives = GetFixedDriveNames();
             
 
-            if (Directory.Exists(defaultDirectory))
-            {
-                if (Directory.Exists(defaultDirectory + @"\AppDependancies"))
-                {
-                    if (Directory.Exists(defaultDirectory + @"\AppDependancies\TextFiles"))
-                    {
-                        Debug.WriteLine("-_-_-_Indexing_-_-_-");
-                        Debug.WriteLine("starting search");
-
-                        
-                        string directoriesContent = "";
-
-                        foreach (string drive in drives) 
-                        {
-                            Debug.WriteLine("Searching drive: " + drive);
-                            directoriesContent += "\n"+ SearchFiles(drive);
-                        }
-                        
-                        Debug.WriteLine("proccessing");
-
-                        CreateOrUpdateTextFile(_directoriesFile, directoriesContent);
-                        
-                        string executablesPaths = FilterAndJoinPaths(directoriesContent, _executablesTypes);
-                        string imagesPaths = FilterAndJoinPaths(directoriesContent, _imagesTypes);
-                        string videosPaths = FilterAndJoinPaths(directoriesContent, _videosTypes);
-                        string audioPaths = FilterAndJoinPaths(directoriesContent, _audioTypes);
-                        string systemPaths = FilterAndJoinPaths(directoriesContent, _systemTypes);
-                        string textPaths = FilterAndJoinPaths(directoriesContent, _textTypes);
-                        string compressedPaths = FilterAndJoinPaths(directoriesContent, _compressedTypes);
-                        string folderPaths = FilterFoldersFromPaths(directoriesContent);
-                        string miscellaneousPaths = GetMiscellaneousPaths(directoriesContent,
-                                                                  _executablesTypes.Concat(_imagesTypes)
-                                                                                   .Concat(_videosTypes)
-                                                                                   .Concat(_audioTypes)
-                                                                                   .Concat(_systemTypes)
-                                                                                   .Concat(_textTypes)
-                                                                                   .Concat(_compressedTypes)
-                                                                                   .ToArray());
-
-
-
-                        Debug.WriteLine("StartSaving...");
-
-                        CreateOrUpdateTextFile(_executablesFile, executablesPaths);
-                        CreateOrUpdateTextFile(_imagesFile, imagesPaths);
-                        CreateOrUpdateTextFile(_videosFile, videosPaths);
-                        CreateOrUpdateTextFile(_audioFile, audioPaths);
-                        CreateOrUpdateTextFile(_systemFile, systemPaths);
-                        CreateOrUpdateTextFile(_textFile, textPaths);
-                        CreateOrUpdateTextFile(_CompressedFile, compressedPaths);
-                        CreateOrUpdateTextFile(_miscellaneousFile, miscellaneousPaths);
-                        CreateOrUpdateTextFile(_FoldersFile, folderPaths);
-                    }
-                    else
-                    {
-                        Directory.CreateDirectory(defaultDirectory + @"\AppDependancies\TextFiles");
-                        IndexFiles();
-                    }
-                }
-                else
-                {
-                    Directory.CreateDirectory(defaultDirectory + @"\AppDependancies");
-                    Directory.CreateDirectory(defaultDirectory + @"\AppDependancies\TextFiles");
-                    IndexFiles();
-                }
-            }
-            else
+            if (!Directory.Exists(defaultDirectory))
             {
                 Directory.CreateDirectory(defaultDirectory);
                 Directory.CreateDirectory(defaultDirectory + @"\AppDependancies");
                 Directory.CreateDirectory(defaultDirectory + @"\AppDependancies\TextFiles");
                 IndexFiles();
             }
+            if (!Directory.Exists(defaultDirectory + @"\AppDependancies"))
+            {
+                Directory.CreateDirectory(defaultDirectory + @"\AppDependancies");
+                Directory.CreateDirectory(defaultDirectory + @"\AppDependancies\TextFiles");
+                IndexFiles();
+            }
+            if (!Directory.Exists(defaultDirectory + @"\AppDependancies\TextFiles"))
+            {
+                Directory.CreateDirectory(defaultDirectory + @"\AppDependancies\TextFiles");
+                IndexFiles();
+            }
+            
+            Debug.WriteLine("-_-_-_Indexing_-_-_-");
+            Debug.WriteLine("starting search");
 
+            string directoriesContent = "";
+
+            Stopwatch FilesSearchStopwatch = new Stopwatch();
+            FilesSearchStopwatch.Start();
+
+            foreach (string drive in drives)
+            {
+                Debug.WriteLine("Searching drive: " + drive);
+                directoriesContent += "\n" + SearchFiles(drive);
+            }
+
+            FilesSearchStopwatch.Stop();
+            TimeSpan FileSearchTS = FilesSearchStopwatch.Elapsed;
+            string FileSearchE = String.Format("{0:00}:{1:00}", FileSearchTS.Minutes, FileSearchTS.Seconds);
+
+
+            Debug.WriteLine("proccessing");
+
+            Stopwatch ProcessingStopwatch = new Stopwatch();
+            ProcessingStopwatch.Start();
+
+            CreateOrUpdateTextFile(_directoriesFile, directoriesContent);
+
+            string executablesPaths = FilterAndJoinPaths(directoriesContent, _executablesTypes);
+            string imagesPaths = FilterAndJoinPaths(directoriesContent, _imagesTypes);
+            string videosPaths = FilterAndJoinPaths(directoriesContent, _videosTypes);
+            string audioPaths = FilterAndJoinPaths(directoriesContent, _audioTypes);
+            string systemPaths = FilterAndJoinPaths(directoriesContent, _systemTypes);
+            string textPaths = FilterAndJoinPaths(directoriesContent, _textTypes);
+            string compressedPaths = FilterAndJoinPaths(directoriesContent, _compressedTypes);
+            string folderPaths = FilterFoldersFromPaths(directoriesContent);
+            string miscellaneousPaths = GetMiscellaneousPaths
+                (
+                    directoriesContent,
+                    _executablesTypes
+                    .Concat(_imagesTypes)
+                    .Concat(_videosTypes)
+                    .Concat(_audioTypes)
+                    .Concat(_systemTypes)
+                    .Concat(_textTypes)
+                    .Concat(_compressedTypes)
+                    .ToArray()
+                );
+            ProcessingStopwatch.Stop();
+
+            TimeSpan ProcessingTS = ProcessingStopwatch.Elapsed;
+            string ProcessingE = String.Format("{0:00}:{1:00}", ProcessingTS.Minutes, ProcessingTS.Seconds);
+
+            Debug.WriteLine("StartSaving...");
+
+            Stopwatch SavingStopwatch = new Stopwatch();
+            SavingStopwatch.Start();
+
+            CreateOrUpdateTextFile(_executablesFile, executablesPaths);
+            CreateOrUpdateTextFile(_imagesFile, imagesPaths);
+            CreateOrUpdateTextFile(_videosFile, videosPaths);
+            CreateOrUpdateTextFile(_audioFile, audioPaths);
+            CreateOrUpdateTextFile(_systemFile, systemPaths);
+            CreateOrUpdateTextFile(_textFile, textPaths);
+            CreateOrUpdateTextFile(_CompressedFile, compressedPaths);
+            CreateOrUpdateTextFile(_miscellaneousFile, miscellaneousPaths);
+            CreateOrUpdateTextFile(_FoldersFile, folderPaths);
+
+            SavingStopwatch.Stop();
+            TimeSpan SaveTS = ProcessingStopwatch.Elapsed;
+            string SaveE = String.Format("{0:00}:{1:00}", SaveTS.Minutes, SaveTS.Seconds);
+
+            string[] strings = new string[]
+            {
+                FileSearchE,
+                ProcessingE,
+                SaveE
+            };
+            return strings;
         }
 
         static List<string> GetFixedDriveNames()

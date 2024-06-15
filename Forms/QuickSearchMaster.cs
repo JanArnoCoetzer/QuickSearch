@@ -46,8 +46,7 @@ namespace WindowsQuickSearch.Forms
         }
 
         private bool UpdateExplorer(string currentPath, bool fromSearch)
-        {
-            Debug.WriteLine(_currentHistoryIndex);
+        {            
             if (!fromSearch)
             {
                 ExplorerContent.Controls.Clear();
@@ -172,8 +171,7 @@ namespace WindowsQuickSearch.Forms
         }
         
         static bool CheckIfHasExtension(string path)
-        {
-            Debug.WriteLine(path);
+        {            
             string[] parts = path.Split('\\');
             string lastPart = parts[^1];
 
@@ -587,11 +585,8 @@ namespace WindowsQuickSearch.Forms
         }
 
         private void LeftArrow_Click(object sender, EventArgs e)
-        {
-            string t = StepBackHistory();
-            Debug.WriteLine(t);
-            ShowFolder(t, true,true);
-            
+        {                      
+            ShowFolder(StepBackHistory(), true,true);           
         }
 
         private void RightArrow_Click(object sender, EventArgs e)
