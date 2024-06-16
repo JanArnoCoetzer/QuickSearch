@@ -11,7 +11,8 @@ namespace QuickSearch.Classes.UiElements
         private float _value = 0; // Use float for finer granularity
         private Color _progressBarColor = Color.FromArgb(0, 204, 204); // Default color (Teal)
         private Color _backgroundColor = Color.FromArgb(71, 71, 71); // Default background color (Luminosity 28 gray)
-
+       
+       
         public int Minimum
         {
             get { return _minimum; }
@@ -61,6 +62,8 @@ namespace QuickSearch.Classes.UiElements
             this.BackColor = _backgroundColor; // Set default background color
         }
 
+
+
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -81,5 +84,7 @@ namespace QuickSearch.Classes.UiElements
                 e.Graphics.FillRectangle(brush, barRect);
             }
         }
+
+        
     }
 }

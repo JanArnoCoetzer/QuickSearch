@@ -375,60 +375,47 @@ namespace WindowsQuickSearch.Classes
         static string SearchFiles(string directory = @"C:\")
         {
             StringBuilder filesStringBuilder = new StringBuilder();
-            object lockObj = new object();
 
-                try
+            try
+            {
+                string[] files = Directory.GetFiles(directory);
+
+                foreach (string file in files)
                 {
+                    filesStringBuilder.AppendLine(file);
+                }
 
-                    Parallel.ForEach(Directory.GetFiles(directory), file =>
+                string[] subDirectories = Directory.GetDirectories(directory);
+
+                foreach (string subDir in subDirectories)
+                {
+                    try
                     {
-                        lock (lockObj)
-                        {
-                            filesStringBuilder.AppendLine(file);
-                        }
-                    });
-
-
-
-                    Parallel.ForEach(Directory.GetDirectories(directory), subDir =>
+                        string subDirFiles = SearchFiles(subDir);
+                        filesStringBuilder.Append(subDirFiles);
+                    }
+                    catch (UnauthorizedAccessException)
                     {
-                        try
-                        {
-                            lock (lockObj)
-                            {                              
-                                    filesStringBuilder.Append(SearchFiles(subDir));
-                            }
-
-                        }
-                        catch (UnauthorizedAccessException)
-                        {
-                            
-                        }
-                        catch (Exception ex)
-                        {
-
-
-                        }
-
-                    });
+                    }
+                    catch (Exception ex)
+                    {
+                    }
                 }
-                catch (UnauthorizedAccessException)
-                {
-                    
-                }
-                catch (Exception ex)
-                {
-
-
-                }
-            
+            }
+            catch (UnauthorizedAccessException)
+            {
+            }
+            catch (Exception ex)
+            {
+            }
 
             return filesStringBuilder.ToString();
         }
 
 
-       
-        
+
+
+
         static void CreateOrUpdateTextFile(string path, string content)
         {
             Debug.WriteLine("-_-_-_SAVING_-_-_-\n" + path);
@@ -643,6 +630,18 @@ namespace WindowsQuickSearch.Classes
             return resultBuilder.ToString().TrimEnd();
         }
 
-        
+        private static int StringToInt(string value)
+        {
+            int result;
+            if (int.TryParse(value, out result))
+            {
+                return result;
+            }
+            else
+            {
+                Debug.WriteLine("StringToIntError: Invalid integer string '" + value + "'");
+                return 0;
+            }
+        }
     }
 }

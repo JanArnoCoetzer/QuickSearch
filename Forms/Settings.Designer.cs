@@ -50,29 +50,25 @@
             LastIndexedLabel = new Label();
             StartIndexing = new Button();
             label4 = new Label();
-            tableLayoutPanel10 = new TableLayoutPanel();
-            label11 = new Label();
-            MultiThreadingCheck = new CheckBox();
-            tableLayoutPanel3 = new TableLayoutPanel();
-            ThreadCountLabel = new Label();
-            ThreadCountTrackBar = new TrackBar();
-            label6 = new Label();
-            tableLayoutPanel11 = new TableLayoutPanel();
-            ExpectedIndexingTimeLabel = new Label();
-            label5 = new Label();
-            tableLayoutPanel12 = new TableLayoutPanel();
-            ExpectedIndexingTotalTimeLabel = new Label();
-            label14 = new Label();
             tableLayoutPanel14 = new TableLayoutPanel();
             PrevTimeLabel = new Label();
             label13 = new Label();
             tableLayoutPanel15 = new TableLayoutPanel();
             label3 = new Label();
-            IndexingProgressBar = new QuickSearch.Classes.UiElements.CustomProgressBar();
+            circularSpinner = new QuickSearch.Classes.UiElements.CircularSpinner();
             tableLayoutPanel13 = new TableLayoutPanel();
             Savebutton = new Button();
             CloseButton = new Button();
             tableLayoutPanel4 = new TableLayoutPanel();
+            tableLayoutPanel3 = new TableLayoutPanel();
+            IndexTimeLabel = new Label();
+            label6 = new Label();
+            tableLayoutPanel10 = new TableLayoutPanel();
+            ProcessingTimeLabel = new Label();
+            label1231 = new Label();
+            tableLayoutPanel11 = new TableLayoutPanel();
+            SavingTimeLabel = new Label();
+            label15 = new Label();
             tableLayoutPanel1.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
@@ -83,14 +79,12 @@
             tableLayoutPanel9.SuspendLayout();
             flowLayoutPanel2.SuspendLayout();
             tableLayoutPanel5.SuspendLayout();
-            tableLayoutPanel10.SuspendLayout();
-            tableLayoutPanel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)ThreadCountTrackBar).BeginInit();
-            tableLayoutPanel11.SuspendLayout();
-            tableLayoutPanel12.SuspendLayout();
             tableLayoutPanel14.SuspendLayout();
             tableLayoutPanel15.SuspendLayout();
             tableLayoutPanel13.SuspendLayout();
+            tableLayoutPanel3.SuspendLayout();
+            tableLayoutPanel10.SuspendLayout();
+            tableLayoutPanel11.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -355,10 +349,9 @@
             // flowLayoutPanel2
             // 
             flowLayoutPanel2.Controls.Add(tableLayoutPanel5);
-            flowLayoutPanel2.Controls.Add(tableLayoutPanel10);
             flowLayoutPanel2.Controls.Add(tableLayoutPanel3);
+            flowLayoutPanel2.Controls.Add(tableLayoutPanel10);
             flowLayoutPanel2.Controls.Add(tableLayoutPanel11);
-            flowLayoutPanel2.Controls.Add(tableLayoutPanel12);
             flowLayoutPanel2.Controls.Add(tableLayoutPanel14);
             flowLayoutPanel2.Dock = DockStyle.Fill;
             flowLayoutPanel2.Location = new Point(0, 211);
@@ -431,204 +424,6 @@
             label4.TabIndex = 1;
             label4.Text = "Last Indexed:";
             // 
-            // tableLayoutPanel10
-            // 
-            tableLayoutPanel10.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            tableLayoutPanel10.ColumnCount = 5;
-            tableLayoutPanel10.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel10.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200F));
-            tableLayoutPanel10.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 10F));
-            tableLayoutPanel10.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 30F));
-            tableLayoutPanel10.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 116F));
-            tableLayoutPanel10.Controls.Add(label11, 1, 0);
-            tableLayoutPanel10.Controls.Add(MultiThreadingCheck, 3, 0);
-            tableLayoutPanel10.Location = new Point(0, 62);
-            tableLayoutPanel10.Margin = new Padding(0);
-            tableLayoutPanel10.Name = "tableLayoutPanel10";
-            tableLayoutPanel10.RowCount = 1;
-            tableLayoutPanel10.RowStyles.Add(new RowStyle(SizeType.Absolute, 15F));
-            tableLayoutPanel10.Size = new Size(381, 30);
-            tableLayoutPanel10.TabIndex = 4;
-            // 
-            // label11
-            // 
-            label11.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            label11.AutoSize = true;
-            label11.Font = new Font("Unispace", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
-            label11.ForeColor = Color.Gray;
-            label11.Location = new Point(23, 6);
-            label11.Name = "label11";
-            label11.Size = new Size(194, 18);
-            label11.TabIndex = 2;
-            label11.Text = "MultiThreading";
-            label11.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // MultiThreadingCheck
-            // 
-            MultiThreadingCheck.Anchor = AnchorStyles.None;
-            MultiThreadingCheck.Appearance = Appearance.Button;
-            MultiThreadingCheck.BackColor = Color.Silver;
-            MultiThreadingCheck.CheckAlign = ContentAlignment.MiddleCenter;
-            MultiThreadingCheck.FlatAppearance.CheckedBackColor = Color.FromArgb(0, 204, 204);
-            MultiThreadingCheck.FlatStyle = FlatStyle.Flat;
-            MultiThreadingCheck.Location = new Point(237, 7);
-            MultiThreadingCheck.Name = "MultiThreadingCheck";
-            MultiThreadingCheck.Size = new Size(15, 15);
-            MultiThreadingCheck.TabIndex = 3;
-            MultiThreadingCheck.UseVisualStyleBackColor = false;
-            MultiThreadingCheck.CheckStateChanged += MultiThreadingCheck_CheckStateChanged;
-            // 
-            // tableLayoutPanel3
-            // 
-            tableLayoutPanel3.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            tableLayoutPanel3.ColumnCount = 5;
-            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 87F));
-            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 40F));
-            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 209F));
-            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 23F));
-            tableLayoutPanel3.Controls.Add(ThreadCountLabel, 2, 0);
-            tableLayoutPanel3.Controls.Add(ThreadCountTrackBar, 3, 0);
-            tableLayoutPanel3.Controls.Add(label6, 1, 0);
-            tableLayoutPanel3.Location = new Point(0, 97);
-            tableLayoutPanel3.Margin = new Padding(0, 5, 0, 0);
-            tableLayoutPanel3.MinimumSize = new Size(200, 50);
-            tableLayoutPanel3.Name = "tableLayoutPanel3";
-            tableLayoutPanel3.RowCount = 1;
-            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 22F));
-            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel3.Size = new Size(381, 57);
-            tableLayoutPanel3.TabIndex = 2;
-            // 
-            // ThreadCountLabel
-            // 
-            ThreadCountLabel.AutoSize = true;
-            ThreadCountLabel.Dock = DockStyle.Left;
-            ThreadCountLabel.Font = new Font("Unispace", 9.749999F, FontStyle.Bold, GraphicsUnit.Point);
-            ThreadCountLabel.ForeColor = Color.Gray;
-            ThreadCountLabel.Location = new Point(110, 0);
-            ThreadCountLabel.Name = "ThreadCountLabel";
-            ThreadCountLabel.Size = new Size(23, 57);
-            ThreadCountLabel.TabIndex = 3;
-            ThreadCountLabel.Text = "99";
-            ThreadCountLabel.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // ThreadCountTrackBar
-            // 
-            ThreadCountTrackBar.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            ThreadCountTrackBar.AutoSize = false;
-            ThreadCountTrackBar.LargeChange = 1;
-            ThreadCountTrackBar.Location = new Point(147, 8);
-            ThreadCountTrackBar.Margin = new Padding(0);
-            ThreadCountTrackBar.Maximum = 64;
-            ThreadCountTrackBar.Name = "ThreadCountTrackBar";
-            ThreadCountTrackBar.Size = new Size(209, 41);
-            ThreadCountTrackBar.TabIndex = 2;
-            ThreadCountTrackBar.TickFrequency = 2;
-            ThreadCountTrackBar.TickStyle = TickStyle.Both;
-            ThreadCountTrackBar.ValueChanged += ThreadCountTrackBar_ValueChanged;
-            // 
-            // label6
-            // 
-            label6.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            label6.AutoSize = true;
-            label6.Font = new Font("Unispace", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
-            label6.ForeColor = Color.Gray;
-            label6.Location = new Point(23, 19);
-            label6.Name = "label6";
-            label6.Size = new Size(81, 18);
-            label6.TabIndex = 1;
-            label6.Text = "Threads:";
-            // 
-            // tableLayoutPanel11
-            // 
-            tableLayoutPanel11.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            tableLayoutPanel11.ColumnCount = 5;
-            tableLayoutPanel11.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel11.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200F));
-            tableLayoutPanel11.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 10F));
-            tableLayoutPanel11.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 126F));
-            tableLayoutPanel11.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 22F));
-            tableLayoutPanel11.Controls.Add(ExpectedIndexingTimeLabel, 3, 0);
-            tableLayoutPanel11.Controls.Add(label5, 1, 0);
-            tableLayoutPanel11.Location = new Point(0, 154);
-            tableLayoutPanel11.Margin = new Padding(0);
-            tableLayoutPanel11.Name = "tableLayoutPanel11";
-            tableLayoutPanel11.RowCount = 1;
-            tableLayoutPanel11.RowStyles.Add(new RowStyle(SizeType.Absolute, 15F));
-            tableLayoutPanel11.Size = new Size(381, 30);
-            tableLayoutPanel11.TabIndex = 5;
-            // 
-            // ExpectedIndexingTimeLabel
-            // 
-            ExpectedIndexingTimeLabel.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            ExpectedIndexingTimeLabel.AutoSize = true;
-            ExpectedIndexingTimeLabel.Font = new Font("Unispace", 9.749999F, FontStyle.Bold, GraphicsUnit.Point);
-            ExpectedIndexingTimeLabel.ForeColor = Color.Gray;
-            ExpectedIndexingTimeLabel.Location = new Point(233, 7);
-            ExpectedIndexingTimeLabel.Name = "ExpectedIndexingTimeLabel";
-            ExpectedIndexingTimeLabel.Size = new Size(120, 15);
-            ExpectedIndexingTimeLabel.TabIndex = 3;
-            ExpectedIndexingTimeLabel.Text = "50s/TB";
-            ExpectedIndexingTimeLabel.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // label5
-            // 
-            label5.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            label5.AutoSize = true;
-            label5.Font = new Font("Unispace", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
-            label5.ForeColor = Color.Gray;
-            label5.Location = new Point(23, 0);
-            label5.Name = "label5";
-            label5.Size = new Size(194, 30);
-            label5.TabIndex = 2;
-            label5.Text = "Expected Indexing Time:";
-            label5.TextAlign = ContentAlignment.BottomLeft;
-            // 
-            // tableLayoutPanel12
-            // 
-            tableLayoutPanel12.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            tableLayoutPanel12.ColumnCount = 5;
-            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200F));
-            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 10F));
-            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 126F));
-            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 10F));
-            tableLayoutPanel12.Controls.Add(ExpectedIndexingTotalTimeLabel, 3, 0);
-            tableLayoutPanel12.Controls.Add(label14, 1, 0);
-            tableLayoutPanel12.Location = new Point(0, 184);
-            tableLayoutPanel12.Margin = new Padding(0);
-            tableLayoutPanel12.Name = "tableLayoutPanel12";
-            tableLayoutPanel12.RowCount = 1;
-            tableLayoutPanel12.RowStyles.Add(new RowStyle(SizeType.Absolute, 15F));
-            tableLayoutPanel12.Size = new Size(381, 30);
-            tableLayoutPanel12.TabIndex = 6;
-            // 
-            // ExpectedIndexingTotalTimeLabel
-            // 
-            ExpectedIndexingTotalTimeLabel.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            ExpectedIndexingTotalTimeLabel.AutoSize = true;
-            ExpectedIndexingTotalTimeLabel.Font = new Font("Unispace", 9.749999F, FontStyle.Bold, GraphicsUnit.Point);
-            ExpectedIndexingTotalTimeLabel.ForeColor = Color.Gray;
-            ExpectedIndexingTotalTimeLabel.Location = new Point(233, 7);
-            ExpectedIndexingTotalTimeLabel.Name = "ExpectedIndexingTotalTimeLabel";
-            ExpectedIndexingTotalTimeLabel.Size = new Size(120, 15);
-            ExpectedIndexingTotalTimeLabel.TabIndex = 3;
-            ExpectedIndexingTotalTimeLabel.Text = "1min 30s";
-            ExpectedIndexingTotalTimeLabel.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // label14
-            // 
-            label14.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            label14.AutoSize = true;
-            label14.Font = new Font("Unispace", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
-            label14.ForeColor = Color.Gray;
-            label14.Location = new Point(23, 6);
-            label14.Name = "label14";
-            label14.Size = new Size(194, 18);
-            label14.TabIndex = 2;
-            label14.Text = "Total Time:";
-            // 
             // tableLayoutPanel14
             // 
             tableLayoutPanel14.Anchor = AnchorStyles.Left | AnchorStyles.Right;
@@ -640,7 +435,7 @@
             tableLayoutPanel14.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 10F));
             tableLayoutPanel14.Controls.Add(PrevTimeLabel, 3, 0);
             tableLayoutPanel14.Controls.Add(label13, 1, 0);
-            tableLayoutPanel14.Location = new Point(0, 214);
+            tableLayoutPanel14.Location = new Point(0, 152);
             tableLayoutPanel14.Margin = new Padding(0);
             tableLayoutPanel14.Name = "tableLayoutPanel14";
             tableLayoutPanel14.RowCount = 1;
@@ -671,51 +466,49 @@
             label13.Name = "label13";
             label13.Size = new Size(194, 18);
             label13.TabIndex = 2;
-            label13.Text = "Previous Time:";
+            label13.Text = "Total Index Time:";
             // 
             // tableLayoutPanel15
             // 
-            tableLayoutPanel15.ColumnCount = 2;
+            tableLayoutPanel15.ColumnCount = 4;
             tableLayoutPanel15.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tableLayoutPanel15.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 283F));
+            tableLayoutPanel15.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 8F));
+            tableLayoutPanel15.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 34F));
+            tableLayoutPanel15.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 246F));
             tableLayoutPanel15.Controls.Add(label3, 0, 0);
-            tableLayoutPanel15.Controls.Add(IndexingProgressBar, 1, 0);
+            tableLayoutPanel15.Controls.Add(circularSpinner, 2, 0);
             tableLayoutPanel15.Dock = DockStyle.Fill;
             tableLayoutPanel15.Location = new Point(0, 181);
             tableLayoutPanel15.Margin = new Padding(0);
             tableLayoutPanel15.Name = "tableLayoutPanel15";
             tableLayoutPanel15.RowCount = 1;
             tableLayoutPanel15.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel15.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableLayoutPanel15.Size = new Size(384, 30);
             tableLayoutPanel15.TabIndex = 5;
             // 
             // label3
             // 
+            label3.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             label3.AutoSize = true;
-            label3.Dock = DockStyle.Fill;
             label3.Font = new Font("Unispace", 11.9999981F, FontStyle.Bold, GraphicsUnit.Point);
-            label3.Location = new Point(3, 0);
+            label3.ImageAlign = ContentAlignment.BottomCenter;
+            label3.Location = new Point(3, 5);
             label3.Name = "label3";
             label3.RightToLeft = RightToLeft.No;
-            label3.Size = new Size(95, 30);
+            label3.Size = new Size(90, 19);
             label3.TabIndex = 3;
             label3.Text = "Indexing";
             label3.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // IndexingProgressBar
+            // circularSpinner
             // 
-            IndexingProgressBar.Anchor = AnchorStyles.Left;
-            IndexingProgressBar.BackColor = Color.FromArgb(21, 21, 21);
-            IndexingProgressBar.Location = new Point(104, 10);
-            IndexingProgressBar.Maximum = 100;
-            IndexingProgressBar.Minimum = 0;
-            IndexingProgressBar.MinimumSize = new Size(30, 10);
-            IndexingProgressBar.Name = "IndexingProgressBar";
-            IndexingProgressBar.ProgressBarColor = Color.FromArgb(0, 204, 204);
-            IndexingProgressBar.Size = new Size(252, 10);
-            IndexingProgressBar.TabIndex = 4;
-            IndexingProgressBar.Value = 0;
+            circularSpinner.ColorThreshold = 0.5F;
+            circularSpinner.Dock = DockStyle.Fill;
+            circularSpinner.Location = new Point(104, 0);
+            circularSpinner.Margin = new Padding(0);
+            circularSpinner.Name = "circularSpinner";
+            circularSpinner.Size = new Size(34, 30);
+            circularSpinner.TabIndex = 5;
             // 
             // tableLayoutPanel13
             // 
@@ -780,6 +573,138 @@
             tableLayoutPanel4.Size = new Size(200, 100);
             tableLayoutPanel4.TabIndex = 0;
             // 
+            // tableLayoutPanel3
+            // 
+            tableLayoutPanel3.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            tableLayoutPanel3.ColumnCount = 5;
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200F));
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 10F));
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 126F));
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 10F));
+            tableLayoutPanel3.Controls.Add(IndexTimeLabel, 3, 0);
+            tableLayoutPanel3.Controls.Add(label6, 1, 0);
+            tableLayoutPanel3.Location = new Point(0, 62);
+            tableLayoutPanel3.Margin = new Padding(0);
+            tableLayoutPanel3.Name = "tableLayoutPanel3";
+            tableLayoutPanel3.RowCount = 1;
+            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 15F));
+            tableLayoutPanel3.Size = new Size(381, 30);
+            tableLayoutPanel3.TabIndex = 8;
+            // 
+            // IndexTimeLabel
+            // 
+            IndexTimeLabel.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            IndexTimeLabel.AutoSize = true;
+            IndexTimeLabel.Font = new Font("Unispace", 9.749999F, FontStyle.Bold, GraphicsUnit.Point);
+            IndexTimeLabel.ForeColor = Color.Gray;
+            IndexTimeLabel.Location = new Point(233, 7);
+            IndexTimeLabel.Name = "IndexTimeLabel";
+            IndexTimeLabel.Size = new Size(120, 15);
+            IndexTimeLabel.TabIndex = 3;
+            IndexTimeLabel.Text = "1min 30s";
+            IndexTimeLabel.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // label6
+            // 
+            label6.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            label6.AutoSize = true;
+            label6.Font = new Font("Unispace", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
+            label6.ForeColor = Color.Gray;
+            label6.Location = new Point(23, 6);
+            label6.Name = "label6";
+            label6.Size = new Size(194, 18);
+            label6.TabIndex = 2;
+            label6.Text = "Indexing Time:";
+            // 
+            // tableLayoutPanel10
+            // 
+            tableLayoutPanel10.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            tableLayoutPanel10.ColumnCount = 5;
+            tableLayoutPanel10.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel10.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200F));
+            tableLayoutPanel10.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 10F));
+            tableLayoutPanel10.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 126F));
+            tableLayoutPanel10.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 10F));
+            tableLayoutPanel10.Controls.Add(ProcessingTimeLabel, 3, 0);
+            tableLayoutPanel10.Controls.Add(label1231, 1, 0);
+            tableLayoutPanel10.Location = new Point(0, 92);
+            tableLayoutPanel10.Margin = new Padding(0);
+            tableLayoutPanel10.Name = "tableLayoutPanel10";
+            tableLayoutPanel10.RowCount = 1;
+            tableLayoutPanel10.RowStyles.Add(new RowStyle(SizeType.Absolute, 15F));
+            tableLayoutPanel10.Size = new Size(381, 30);
+            tableLayoutPanel10.TabIndex = 9;
+            // 
+            // ProcessingTimeLabel
+            // 
+            ProcessingTimeLabel.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            ProcessingTimeLabel.AutoSize = true;
+            ProcessingTimeLabel.Font = new Font("Unispace", 9.749999F, FontStyle.Bold, GraphicsUnit.Point);
+            ProcessingTimeLabel.ForeColor = Color.Gray;
+            ProcessingTimeLabel.Location = new Point(233, 7);
+            ProcessingTimeLabel.Name = "ProcessingTimeLabel";
+            ProcessingTimeLabel.Size = new Size(120, 15);
+            ProcessingTimeLabel.TabIndex = 3;
+            ProcessingTimeLabel.Text = "1min 30s";
+            ProcessingTimeLabel.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // label1231
+            // 
+            label1231.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            label1231.AutoSize = true;
+            label1231.Font = new Font("Unispace", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
+            label1231.ForeColor = Color.Gray;
+            label1231.Location = new Point(23, 6);
+            label1231.Name = "label1231";
+            label1231.Size = new Size(194, 18);
+            label1231.TabIndex = 2;
+            label1231.Text = "Processing Time:";
+            // 
+            // tableLayoutPanel11
+            // 
+            tableLayoutPanel11.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            tableLayoutPanel11.ColumnCount = 5;
+            tableLayoutPanel11.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel11.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200F));
+            tableLayoutPanel11.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 10F));
+            tableLayoutPanel11.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 126F));
+            tableLayoutPanel11.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 10F));
+            tableLayoutPanel11.Controls.Add(SavingTimeLabel, 3, 0);
+            tableLayoutPanel11.Controls.Add(label15, 1, 0);
+            tableLayoutPanel11.Location = new Point(0, 122);
+            tableLayoutPanel11.Margin = new Padding(0);
+            tableLayoutPanel11.Name = "tableLayoutPanel11";
+            tableLayoutPanel11.RowCount = 1;
+            tableLayoutPanel11.RowStyles.Add(new RowStyle(SizeType.Absolute, 15F));
+            tableLayoutPanel11.Size = new Size(381, 30);
+            tableLayoutPanel11.TabIndex = 10;
+            // 
+            // SavingTimeLabel
+            // 
+            SavingTimeLabel.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            SavingTimeLabel.AutoSize = true;
+            SavingTimeLabel.Font = new Font("Unispace", 9.749999F, FontStyle.Bold, GraphicsUnit.Point);
+            SavingTimeLabel.ForeColor = Color.Gray;
+            SavingTimeLabel.Location = new Point(233, 7);
+            SavingTimeLabel.Name = "SavingTimeLabel";
+            SavingTimeLabel.Size = new Size(120, 15);
+            SavingTimeLabel.TabIndex = 3;
+            SavingTimeLabel.Text = "1min 30s";
+            SavingTimeLabel.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // label15
+            // 
+            label15.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            label15.AutoSize = true;
+            label15.Font = new Font("Unispace", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
+            label15.ForeColor = Color.Gray;
+            label15.Location = new Point(23, 6);
+            label15.Name = "label15";
+            label15.Size = new Size(194, 18);
+            label15.TabIndex = 2;
+            label15.Text = "Saving Time:";
+            // 
             // Settings
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -813,20 +738,17 @@
             flowLayoutPanel2.ResumeLayout(false);
             tableLayoutPanel5.ResumeLayout(false);
             tableLayoutPanel5.PerformLayout();
-            tableLayoutPanel10.ResumeLayout(false);
-            tableLayoutPanel10.PerformLayout();
-            tableLayoutPanel3.ResumeLayout(false);
-            tableLayoutPanel3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)ThreadCountTrackBar).EndInit();
-            tableLayoutPanel11.ResumeLayout(false);
-            tableLayoutPanel11.PerformLayout();
-            tableLayoutPanel12.ResumeLayout(false);
-            tableLayoutPanel12.PerformLayout();
             tableLayoutPanel14.ResumeLayout(false);
             tableLayoutPanel14.PerformLayout();
             tableLayoutPanel15.ResumeLayout(false);
             tableLayoutPanel15.PerformLayout();
             tableLayoutPanel13.ResumeLayout(false);
+            tableLayoutPanel3.ResumeLayout(false);
+            tableLayoutPanel3.PerformLayout();
+            tableLayoutPanel10.ResumeLayout(false);
+            tableLayoutPanel10.PerformLayout();
+            tableLayoutPanel11.ResumeLayout(false);
+            tableLayoutPanel11.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -843,9 +765,6 @@
         private Button StartIndexing;
         private Label label4;
         private Label LastIndexedLabel;
-        private TableLayoutPanel tableLayoutPanel3;
-        private Label label6;
-        private Label ThreadCountLabel;
         private TableLayoutPanel tableLayoutPanel6;
         private Label label7;
         private CheckBox StartWithWindowsCheck;
@@ -857,16 +776,6 @@
         private TableLayoutPanel tableLayoutPanel9;
         private Label label10;
         private CheckBox SmartIndexCheck;
-        private TableLayoutPanel tableLayoutPanel10;
-        private Label label11;
-        private CheckBox MultiThreadingCheck;
-        private TableLayoutPanel tableLayoutPanel11;
-        private Label label5;
-        private Label ExpectedIndexingTimeLabel;
-        private TableLayoutPanel tableLayoutPanel12;
-        private Label ExpectedIndexingTotalTimeLabel;
-        private Label label14;
-        private TrackBar ThreadCountTrackBar;
         private NumericUpDown DelayBox;
         private TableLayoutPanel tableLayoutPanel13;
         private Button CloseButton;
@@ -876,6 +785,15 @@
         private Label label13;
         private TableLayoutPanel tableLayoutPanel15;
         private Label label3;
-        private QuickSearch.Classes.UiElements.CustomProgressBar IndexingProgressBar;
+        private QuickSearch.Classes.UiElements.CircularSpinner circularSpinner;
+        private TableLayoutPanel tableLayoutPanel3;
+        private Label IndexTimeLabel;
+        private Label label6;
+        private TableLayoutPanel tableLayoutPanel10;
+        private Label ProcessingTimeLabel;
+        private Label label1231;
+        private TableLayoutPanel tableLayoutPanel11;
+        private Label SavingTimeLabel;
+        private Label label15;
     }
 }
