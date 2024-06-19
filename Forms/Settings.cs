@@ -1,25 +1,18 @@
-﻿using QuickSearch.Classes.UiElements;
+﻿using Microsoft.Win32;
 using System.Diagnostics;
 using WindowsQuickSearch.Classes;
 
+//Index After Start to be done
+//Delay before indexing after start to be done
+//Smart Indexing to be done
 
 namespace WindowsQuickSearch.Forms
 {
     public partial class Settings : Form
     {
-
-        private bool _indexing = false;
-        private bool initialStartWithWindows;
-        private bool initialIndexOnStart;
-        private bool initialSmartIndex;
-        private bool initialMultiThreading;
-        private int initialDelay;
-        private int initialThreadCount;
-        private string initialLastIndexed;
-
         private System.Windows.Forms.Timer _timer;
         private Stopwatch _stopwatch;
-
+        private bool _indexing = false;
 
         public Settings()
         {
@@ -34,7 +27,7 @@ namespace WindowsQuickSearch.Forms
         {
             _indexing = true;
             StartIndexing.Enabled = false;
-            
+
             Save();
             CheckSave();
 
@@ -56,7 +49,7 @@ namespace WindowsQuickSearch.Forms
 
             IndexTimeLabel.Text = back[0].ToString();
             ProcessingTimeLabel.Text = back[1].ToString();
-            SavingTimeLabel.Text = back[2].ToString();            
+            SavingTimeLabel.Text = back[2].ToString();
             PrevTimeLabel.Text = ConvertToMinutesAndSeconds(sumts);
 
             DateTime currentDateTime = DateTime.Now;
@@ -72,21 +65,14 @@ namespace WindowsQuickSearch.Forms
 
             CheckSave();
 
-            circularSpinner.ForeColor = Color.FromArgb(36,36,36);
-            circularSpinner.BackColor = Color.FromArgb(36, 36, 36);           
+            circularSpinner.ForeColor = Color.FromArgb(36, 36, 36);
+            circularSpinner.BackColor = Color.FromArgb(36, 36, 36);
         }
 
-        private void CloseButton_Click(object sender, EventArgs e)
-        {
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            
-            this.Close();
-            this.Dispose();
-        }
+
 
         private void SetSettingsValues()
-        {               
+        {
             StartWithWindowsCheck.Checked = StringToBool(FileManager.GetFieldInFile(FileManager._appSettingsFile, "Launch_On_Start"));
             IndexOnStartCheck.Checked = StringToBool(FileManager.GetFieldInFile(FileManager._appSettingsFile, "Index_On_Start"));
             DelayBox.Value = StringToInt(FileManager.GetFieldInFile(FileManager._appSettingsFile, "Index_On_Start_Delay"));
@@ -103,7 +89,7 @@ namespace WindowsQuickSearch.Forms
             sumts += StringToTimeSpan(prevTimeString2);
             sumts += StringToTimeSpan(prevTimeString3);
 
-            IndexTimeLabel.Text = prevTimeString1; 
+            IndexTimeLabel.Text = prevTimeString1;
             ProcessingTimeLabel.Text = prevTimeString2;
             SavingTimeLabel.Text = prevTimeString3;
             PrevTimeLabel.Text = ConvertToMinutesAndSeconds(sumts);
@@ -132,10 +118,7 @@ namespace WindowsQuickSearch.Forms
             initialStartWithWindows = StartWithWindowsCheck.Checked;
             initialIndexOnStart = IndexOnStartCheck.Checked;
             initialSmartIndex = SmartIndexCheck.Checked;
-            
             initialDelay = (int)DelayBox.Value;
-            
-            initialLastIndexed = LastIndexedLabel.Text;
         }
 
         private bool StringToBool(string value)
@@ -159,7 +142,7 @@ namespace WindowsQuickSearch.Forms
 
         private static TimeSpan StringToTimeSpan(string timeString)
         {
-            // Define the format for mm:ss
+            
             string format = @"mm\:ss";
 
             TimeSpan timeSpan;
@@ -175,12 +158,32 @@ namespace WindowsQuickSearch.Forms
 
         private string ConvertToMinutesAndSeconds(TimeSpan timeSpan)
         {
-            // Calculate total minutes and remaining seconds
+            
             int totalMinutes = (int)timeSpan.TotalMinutes;
             int seconds = timeSpan.Seconds;
 
-            // Format the result as mm:ss
             return $"{totalMinutes:D2}:{seconds:D2}";
+        }
+
+        private bool initialStartWithWindows;
+        private bool initialIndexOnStart;
+        private bool initialSmartIndex;
+        private int initialDelay;
+
+
+
+        private void Save()
+        {
+            FileManager.SetFieldInFile(FileManager._appSettingsFile, "Launch_On_Start", StartWithWindowsCheck.Checked.ToString().ToLower());
+            FileManager.SetFieldInFile(FileManager._appSettingsFile, "Index_On_Start", IndexOnStartCheck.Checked.ToString().ToLower());
+            FileManager.SetFieldInFile(FileManager._appSettingsFile, "Index_On_Start_Delay", DelayBox.Value.ToString());
+            FileManager.SetFieldInFile(FileManager._appSettingsFile, "Smart_Indexing", SmartIndexCheck.Checked.ToString().ToLower());
+
+            StartWithWindows(StringToBool(FileManager.GetFieldInFile(FileManager._appSettingsFile, "Launch_On_Start")));
+
+            SetSettingsValues();
+            StoreInitialValues();
+            CheckSave();
         }
 
         private void CheckSave()
@@ -188,34 +191,101 @@ namespace WindowsQuickSearch.Forms
             bool isModified =
                 StartWithWindowsCheck.Checked != initialStartWithWindows ||
                 IndexOnStartCheck.Checked != initialIndexOnStart ||
-                SmartIndexCheck.Checked != initialSmartIndex ||               
-                (int)DelayBox.Value != initialDelay ||
-                LastIndexedLabel.Text != initialLastIndexed;
+                SmartIndexCheck.Checked != initialSmartIndex ||
+                (int)DelayBox.Value != initialDelay;
 
-            if (isModified&&!_indexing)
+            if (isModified && !_indexing)
             {
-                AllowSave();
+
+                Savebutton.Enabled = true;
             }
             else
             {
-                BlockSave();
+                Savebutton.Enabled = false;
             }
         }
 
-        private void AllowSave()
+        private void StartWithWindows(bool start)
         {
-            Savebutton.Enabled = true;
-        }
-        private void BlockSave()
-        {
-            Savebutton.Enabled = false;
+            if (start)
+            {
+                SetStartup();
+            }
+            else
+            {
+                RemoveStartup();
+            }
         }
 
+        static void SetStartup()
+        {
+            string appName = "QuickSearch";
+            string appPath = Application.ExecutablePath;
+
+            RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+            key.SetValue(appName, "\"" + appPath + "\"");
+        }
+
+        static void RemoveStartup()
+        {
+            string appName = "QuickSearch";
+            RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+            if (key.GetValue(appName) != null)
+            {
+                key.DeleteValue(appName);
+            }
+        }
+
+        private System.Windows.Forms.Timer tooltipTimer;
+        private string tooltipText;
+
+        private void DisplayToolTip(string text)
+        {
+            tooltipTimer = new System.Windows.Forms.Timer();
+            tooltipTimer.Interval = 2000; // 2 seconds
+            tooltipTimer.Tick += TooltipTimer_Tick;
+
+            // Enable owner-drawn tooltip
+            toolTip1.OwnerDraw = true;
+            toolTip1.Draw += new DrawToolTipEventHandler(toolTip1_Draw);
+
+            tooltipText = text;
+            tooltipTimer.Start();
+        }
+        private void TooltipTimer_Tick(object sender, EventArgs e)
+        {
+            tooltipTimer.Stop();
+            Point mousePos = this.PointToClient(Cursor.Position);
+            toolTip1.Show(tooltipText, this, mousePos.X + 10, mousePos.Y + 10);
+        }
+
+        private void toolTip1_Draw(object sender, DrawToolTipEventArgs e)
+        {
+            
+            Color backColor = Color.FromArgb(32, 32, 32); 
+            Color textColor = Color.LightGray; 
+
+            // Fill the background
+            e.Graphics.FillRectangle(new SolidBrush(backColor), e.Bounds);
+
+            
+            e.Graphics.DrawString(e.ToolTipText, e.Font, new SolidBrush(textColor), e.Bounds);
+        }
+
+        private void DestroyToolTip()
+        {
+            toolTip1.Hide(this);
+            tooltipTimer.Stop();
+        }
+
+
+        //Buttons and options
         private void StartWithWindowsCheck_CheckStateChanged(object sender, EventArgs e)
         {
             if (StartWithWindowsCheck.Checked == true)
             {
                 IndexOnStartCheck.Enabled = true;
+
             }
             else if (StartWithWindowsCheck.Checked == false)
             {
@@ -231,9 +301,16 @@ namespace WindowsQuickSearch.Forms
             {
                 DelayBox.Enabled = false;
             }
-
-
             CheckSave();
+        }
+
+        private void StartWithWindowsCheck_MouseHover(object sender, EventArgs e)
+        {
+            DisplayToolTip("QuickSearch will Start when windows is started");
+        }
+        private void StartWithWindowsCheck_MouseLeave(object sender, EventArgs e)
+        {
+            DestroyToolTip();
         }
 
         private void IndexOnStartCheck_CheckStateChanged(object sender, EventArgs e)
@@ -249,17 +326,34 @@ namespace WindowsQuickSearch.Forms
             CheckSave();
         }
 
+        private void IndexOnStartCheck_MouseHover(object sender, EventArgs e)
+        {
+            DisplayToolTip("QuickSearch will index after it starts with windows");
+        }
+
+        private void IndexOnStartCheck_MouseLeave(object sender, EventArgs e)
+        {
+            DestroyToolTip();
+        }
+
         private void SmartIndexCheck_CheckStateChanged(object sender, EventArgs e)
         {
             CheckSave();
         }
+        private void SmartIndexCheck_MouseHover(object sender, EventArgs e)
+        {
+            DisplayToolTip("QuickSearch will Index whenever the computer is not in use");
+        }
 
-       
+        private void SmartIndexCheck_MouseLeave(object sender, EventArgs e)
+        {
+            DestroyToolTip();
+        }
+
         private void DelayBox_ValueChanged(object sender, EventArgs e)
         {
             CheckSave();
         }
-
 
         private void Savebutton_Click(object sender, EventArgs e)
         {
@@ -268,16 +362,15 @@ namespace WindowsQuickSearch.Forms
             GC.WaitForPendingFinalizers();
         }
 
-
-        private void Save() 
+        private void CloseButton_Click(object sender, EventArgs e)
         {
-            FileManager.SetFieldInFile(FileManager._appSettingsFile, "Launch_On_Start", StartWithWindowsCheck.Checked.ToString().ToLower());
-            FileManager.SetFieldInFile(FileManager._appSettingsFile, "Index_On_Start", IndexOnStartCheck.Checked.ToString().ToLower());
-            FileManager.SetFieldInFile(FileManager._appSettingsFile, "Index_On_Start_Delay", DelayBox.Value.ToString());
-            FileManager.SetFieldInFile(FileManager._appSettingsFile, "Smart_Indexing", SmartIndexCheck.Checked.ToString().ToLower());      
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+            this.Close();
+            this.Dispose();
         }
-      
 
-
+        
     }
 }

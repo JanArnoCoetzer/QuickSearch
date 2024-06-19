@@ -1,3 +1,4 @@
+using Microsoft.Win32;
 using WindowsQuickSearch.Forms;
 
 namespace QuickSearch
@@ -15,5 +16,7 @@ namespace QuickSearch
             ApplicationConfiguration.Initialize();
             Application.Run(new QuickSearchMaster());
         }
+
+        
     }
 }
