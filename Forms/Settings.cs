@@ -220,10 +220,10 @@ namespace WindowsQuickSearch.Forms
         static void SetStartup()
         {
             string appName = "QuickSearch";
-            string appPath = Application.ExecutablePath;
+            string appPath = "\"" + Application.ExecutablePath + "\" --autorun"; // Add the --autorun argument
 
             RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
-            key.SetValue(appName, "\"" + appPath + "\"");
+            key.SetValue(appName, appPath);
         }
 
         static void RemoveStartup()
@@ -274,9 +274,18 @@ namespace WindowsQuickSearch.Forms
 
         private void DestroyToolTip()
         {
-            toolTip1.Hide(this);
-            tooltipTimer.Stop();
+            if (toolTip1 != null && toolTip1.Active) 
+            {
+                toolTip1.Hide(this);
+                
+            }
+
+            if (tooltipTimer != null && tooltipTimer.Enabled) 
+            {
+                tooltipTimer.Stop(); 
+            }
         }
+            
 
 
         //Buttons and options
@@ -333,7 +342,9 @@ namespace WindowsQuickSearch.Forms
 
         private void IndexOnStartCheck_MouseLeave(object sender, EventArgs e)
         {
+            
             DestroyToolTip();
+ 
         }
 
         private void SmartIndexCheck_CheckStateChanged(object sender, EventArgs e)

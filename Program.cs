@@ -1,4 +1,7 @@
-using Microsoft.Win32;
+using System;
+using System.Linq;
+using System.Windows.Forms;
+using WindowsQuickSearch.Classes;
 using WindowsQuickSearch.Forms;
 
 namespace QuickSearch
@@ -11,12 +14,28 @@ namespace QuickSearch
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
+            string[] args = Environment.GetCommandLineArgs();
+            bool isAutoRun = args.Contains("--autorun");
+
             ApplicationConfiguration.Initialize();
             Application.Run(new QuickSearchMaster());
-        }
 
-        
+            
+
+
+            if (isAutoRun && FileManager.GetFieldInFile(FileManager._appSettingsFile, "Index_On_Start") == "true")
+            {
+                int result;
+                if (int.TryParse(FileManager.GetFieldInFile(FileManager._appSettingsFile, "Index_On_Start_Delay"), out result))
+                {
+                    Thread.Sleep(result*1000);
+                    FileManager.IndexFiles();
+                }
+            }
+            else
+            {
+                
+            }          
+        }  
     }
 }
