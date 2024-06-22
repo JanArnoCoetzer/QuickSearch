@@ -78,6 +78,7 @@ namespace WindowsQuickSearch.Forms
             DelayBox.Value = StringToInt(FileManager.GetFieldInFile(FileManager._appSettingsFile, "Index_On_Start_Delay"));
             SmartIndexCheck.Checked = StringToBool(FileManager.GetFieldInFile(FileManager._appSettingsFile, "Smart_Indexing"));
             LastIndexedLabel.Text = FileManager.GetFieldInFile(FileManager._appSettingsFile, "Last_Indexed");
+            VersionLabel.Text = "Version:"+FileManager.GetFieldInFile(FileManager._appSettingsFile, "Version");
 
             string prevTimeString1 = FileManager.GetFieldInFile(FileManager._appSettingsFile, "Previous_Indexing_Time");
             string prevTimeString2 = FileManager.GetFieldInFile(FileManager._appSettingsFile, "Previous_Processing_Time");

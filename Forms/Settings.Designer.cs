@@ -32,7 +32,6 @@
             tableLayoutPanel1 = new TableLayoutPanel();
             label1 = new Label();
             tableLayoutPanel2 = new TableLayoutPanel();
-            label2 = new Label();
             flowLayoutPanel1 = new FlowLayoutPanel();
             tableLayoutPanel6 = new TableLayoutPanel();
             label7 = new Label();
@@ -66,6 +65,9 @@
             tableLayoutPanel15 = new TableLayoutPanel();
             label3 = new Label();
             circularSpinner = new QuickSearch.Classes.UiElements.CircularSpinner();
+            tableLayoutPanel12 = new TableLayoutPanel();
+            label2 = new Label();
+            VersionLabel = new Label();
             tableLayoutPanel13 = new TableLayoutPanel();
             Savebutton = new Button();
             CloseButton = new Button();
@@ -86,6 +88,7 @@
             tableLayoutPanel11.SuspendLayout();
             tableLayoutPanel14.SuspendLayout();
             tableLayoutPanel15.SuspendLayout();
+            tableLayoutPanel12.SuspendLayout();
             tableLayoutPanel13.SuspendLayout();
             SuspendLayout();
             // 
@@ -126,10 +129,10 @@
             // 
             tableLayoutPanel2.ColumnCount = 1;
             tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tableLayoutPanel2.Controls.Add(label2, 0, 0);
             tableLayoutPanel2.Controls.Add(flowLayoutPanel1, 0, 1);
             tableLayoutPanel2.Controls.Add(flowLayoutPanel2, 0, 3);
             tableLayoutPanel2.Controls.Add(tableLayoutPanel15, 0, 2);
+            tableLayoutPanel2.Controls.Add(tableLayoutPanel12, 0, 0);
             tableLayoutPanel2.Dock = DockStyle.Fill;
             tableLayoutPanel2.Location = new Point(0, 50);
             tableLayoutPanel2.Margin = new Padding(0);
@@ -141,19 +144,6 @@
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 90F));
             tableLayoutPanel2.Size = new Size(384, 468);
             tableLayoutPanel2.TabIndex = 1;
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Dock = DockStyle.Fill;
-            label2.Font = new Font("Unispace", 11.9999981F, FontStyle.Bold, GraphicsUnit.Point);
-            label2.Location = new Point(3, 0);
-            label2.Name = "label2";
-            label2.RightToLeft = RightToLeft.No;
-            label2.Size = new Size(378, 30);
-            label2.TabIndex = 1;
-            label2.Text = "General";
-            label2.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // flowLayoutPanel1
             // 
@@ -650,6 +640,49 @@
             circularSpinner.Size = new Size(34, 30);
             circularSpinner.TabIndex = 5;
             // 
+            // tableLayoutPanel12
+            // 
+            tableLayoutPanel12.ColumnCount = 2;
+            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel12.Controls.Add(label2, 0, 0);
+            tableLayoutPanel12.Controls.Add(VersionLabel, 1, 0);
+            tableLayoutPanel12.Dock = DockStyle.Fill;
+            tableLayoutPanel12.Location = new Point(0, 0);
+            tableLayoutPanel12.Margin = new Padding(0);
+            tableLayoutPanel12.Name = "tableLayoutPanel12";
+            tableLayoutPanel12.RowCount = 1;
+            tableLayoutPanel12.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel12.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel12.Size = new Size(384, 30);
+            tableLayoutPanel12.TabIndex = 6;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Dock = DockStyle.Fill;
+            label2.Font = new Font("Unispace", 11.9999981F, FontStyle.Bold, GraphicsUnit.Point);
+            label2.Location = new Point(3, 0);
+            label2.Name = "label2";
+            label2.RightToLeft = RightToLeft.No;
+            label2.Size = new Size(186, 30);
+            label2.TabIndex = 2;
+            label2.Text = "General";
+            label2.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // VersionLabel
+            // 
+            VersionLabel.AutoSize = true;
+            VersionLabel.Dock = DockStyle.Fill;
+            VersionLabel.Font = new Font("Unispace", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
+            VersionLabel.ForeColor = Color.FromArgb(64, 64, 64);
+            VersionLabel.Location = new Point(195, 0);
+            VersionLabel.Name = "VersionLabel";
+            VersionLabel.Size = new Size(186, 30);
+            VersionLabel.TabIndex = 3;
+            VersionLabel.Text = "Version: 0.1.0";
+            VersionLabel.TextAlign = ContentAlignment.MiddleRight;
+            // 
             // tableLayoutPanel13
             // 
             tableLayoutPanel13.ColumnCount = 2;
@@ -732,7 +765,6 @@
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
             tableLayoutPanel2.ResumeLayout(false);
-            tableLayoutPanel2.PerformLayout();
             flowLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel6.ResumeLayout(false);
             tableLayoutPanel6.PerformLayout();
@@ -756,6 +788,8 @@
             tableLayoutPanel14.PerformLayout();
             tableLayoutPanel15.ResumeLayout(false);
             tableLayoutPanel15.PerformLayout();
+            tableLayoutPanel12.ResumeLayout(false);
+            tableLayoutPanel12.PerformLayout();
             tableLayoutPanel13.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -765,7 +799,6 @@
         private TableLayoutPanel tableLayoutPanel1;
         private Label label1;
         private TableLayoutPanel tableLayoutPanel2;
-        private Label label2;
         private TableLayoutPanel tableLayoutPanel4;
         private FlowLayoutPanel flowLayoutPanel1;
         private FlowLayoutPanel flowLayoutPanel2;
@@ -804,5 +837,8 @@
         private Label label15;
         private CheckBox StartWithWindowsCheck;
         private ToolTip toolTip1;
+        private TableLayoutPanel tableLayoutPanel12;
+        private Label label2;
+        private Label VersionLabel;
     }
 }
