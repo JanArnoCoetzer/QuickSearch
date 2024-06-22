@@ -353,7 +353,7 @@ namespace WindowsQuickSearch.Forms
         }
         private void SmartIndexCheck_MouseHover(object sender, EventArgs e)
         {
-            DisplayToolTip("QuickSearch will Index whenever the computer is not in use");
+            DisplayToolTip("Will Index whenever the computer is not in use");
         }
 
         private void SmartIndexCheck_MouseLeave(object sender, EventArgs e)
