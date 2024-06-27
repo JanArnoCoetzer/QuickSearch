@@ -54,7 +54,15 @@ namespace QuickSearch
                 };
 
                 // Start the process
-                Process.Start(processInfo);
+                try 
+                { 
+                    Process.Start(processInfo); 
+                } 
+                catch 
+                { 
+
+                }
+                
             }
             catch (System.ComponentModel.Win32Exception ex)
             {

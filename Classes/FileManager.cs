@@ -173,6 +173,8 @@ namespace WindowsQuickSearch.Classes
                     .Concat(_compressedTypes)
                     .ToArray()
                 );
+
+
             ProcessingStopwatch.Stop();
 
             TimeSpan ProcessingTS = ProcessingStopwatch.Elapsed;
@@ -208,10 +210,10 @@ namespace WindowsQuickSearch.Classes
 
         static List<string> GetFixedDriveNames()
         {
-            // Get all drives
+            
             DriveInfo[] allDrives = DriveInfo.GetDrives();
 
-            // Initialize a list to hold the drive names
+            
             List<string> driveNames = new List<string>();
 
             foreach (DriveInfo drive in allDrives)
@@ -229,13 +231,13 @@ namespace WindowsQuickSearch.Classes
         {
             List<string> miscellaneousPaths = new List<string>();
 
-            // Split the directories content into individual file paths
+           
             string[] filePaths = directoriesContent.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
-            // Iterate through each file path
+            
             foreach (string filePath in filePaths)
             {
-                // Check if the file has any of the allowed extensions
+               
                 bool hasAllowedExtension = false;
                 foreach (string extension in allowedExtensions)
                 {
@@ -246,14 +248,14 @@ namespace WindowsQuickSearch.Classes
                     }
                 }
 
-                // If the file doesn't have any of the allowed extensions, add it to miscellaneous paths
+               
                 if (!hasAllowedExtension)
                 {
                     miscellaneousPaths.Add(filePath);
                 }
             }
 
-            // Join the miscellaneous paths into a single string with newline separator
+           
             return string.Join(Environment.NewLine, miscellaneousPaths);
         }
 
@@ -261,13 +263,12 @@ namespace WindowsQuickSearch.Classes
         {
             _foldersfilesSearched = 0;
 
-            if (Regex.IsMatch(keyword, @"^[a-zA-Z0-9_\-]+\.[a-zA-Z0-9_\-]+$"))
+            if (Regex.IsMatch(keyword, @"^[a-zA-Z0-9_\-]+\.(?=.*[a-zA-Z])[a-zA-Z0-9_\-]+$"))
             {
                 try
                 {
                     string[] extensionparts = keyword.Split('.');
-                    string extension = "." + (extensionparts[^1].ToLower());
-                    Debug.WriteLine(extensionparts.Length);
+                    string extension = "." + (extensionparts[^1].ToLower());                    
 
                     if (_executablesTypes.Contains(extension))
                     {
@@ -361,13 +362,13 @@ namespace WindowsQuickSearch.Classes
 
         private static void ShowErrorMessage(string err)
         {
-            // Define the error message
+            
             string message = "Before you are able to search, the drives needs to be indexed.\n\nGo settings>Indexing>Index";
             string caption = "Drives Not Indexed";
             MessageBoxButtons buttons = MessageBoxButtons.OK;
             MessageBoxIcon icon = MessageBoxIcon.Error;
 
-            // Display the message box
+           
             MessageBox.Show(message, caption, buttons, icon);
         }
 
@@ -375,38 +376,33 @@ namespace WindowsQuickSearch.Classes
         static string SearchFiles(string directory = @"C:\")
         {
             StringBuilder filesStringBuilder = new StringBuilder();
+            Stack<string> directoriesStack = new Stack<string>();
+            directoriesStack.Push(directory);
 
-            try
+            while (directoriesStack.Count > 0)
             {
-                string[] files = Directory.GetFiles(directory);
+                string currentDir = directoriesStack.Pop();
 
-                foreach (string file in files)
+                try
                 {
-                    filesStringBuilder.AppendLine(file);
-                }
-
-                string[] subDirectories = Directory.GetDirectories(directory);
-
-                foreach (string subDir in subDirectories)
-                {
-                    try
+                    string[] files = Directory.GetFiles(currentDir);
+                    foreach (string file in files)
                     {
-                        string subDirFiles = SearchFiles(subDir);
-                        filesStringBuilder.Append(subDirFiles);
+                        filesStringBuilder.AppendLine(file);
                     }
-                    catch (UnauthorizedAccessException)
+
+                    string[] subDirectories = Directory.GetDirectories(currentDir);
+                    foreach (string subDir in subDirectories)
                     {
-                    }
-                    catch (Exception ex)
-                    {
+                        directoriesStack.Push(subDir);
                     }
                 }
-            }
-            catch (UnauthorizedAccessException)
-            {
-            }
-            catch (Exception ex)
-            {
+                catch (UnauthorizedAccessException)
+                {
+                }
+                catch (Exception ex)
+                {
+                }
             }
 
             return filesStringBuilder.ToString();
@@ -584,18 +580,18 @@ namespace WindowsQuickSearch.Classes
 
         static string RemoveDuplicateLines(string input)
         {
-            // Use a HashSet to store unique lines
+            
             HashSet<string> uniqueLines = new HashSet<string>();
             StringBuilder resultBuilder = new StringBuilder();
 
-            // Split the input string into lines
+            
             string[] lines = input.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
             foreach (string line in lines)
             {
                 if (uniqueLines.Add(line))
                 {
-                    // Append the line to the result if it's added to the HashSet (i.e., it's unique)
+                    
                     resultBuilder.AppendLine(line);
                 }
             }
@@ -615,7 +611,7 @@ namespace WindowsQuickSearch.Classes
 
                 if (keywordIndex != -1)
                 {
-                    // Find the end of the word containing the keyword
+                    
                     int endIndex = keywordIndex + keyword.Length;
                     while (endIndex < path.Length && (char.IsLetterOrDigit(path[endIndex]) || path[endIndex] == '_' || path[endIndex] == '.'))
                     {

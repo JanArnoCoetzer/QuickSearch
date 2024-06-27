@@ -134,7 +134,13 @@ namespace WindowsQuickSearch.Forms
 
             int Foldersfound = 0;
             int Filesfound = 0;
-
+            
+            /*
+            foreach (string line in lines)
+            {
+                Debug.Write(line+"\n\n");
+            }
+            */    
             
             foreach (string line in lines)
             {
