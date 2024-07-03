@@ -1,0 +1,10 @@
+Launch_On_Start{true},
+Index_On_Start{false},
+Index_On_Start_Delay{10},
+Smart_Indexing{false},
+Last_Indexed{2024-07-01 15:31},
+Previous_Indexing_Time{00:57},
+Previous_Processing_Time{00:22},
+Previous_Saving_Time{00:22},
+Previous_Total_Indexing_Time{01:41},
+
